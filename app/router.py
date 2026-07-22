@@ -1,5 +1,6 @@
 from app.classifier import classify
 from app.ollama_client import ask_model
+from app.logger import log_request
 
 from app.config import (
     QWEN,
@@ -45,6 +46,12 @@ def process_prompt(prompt, image_path=None):
 
     model = choose_model(prompt, image_path)
 
+    # Log the request
+    log_request(
+        prompt=prompt,
+        model=model
+    )
+
     answer = ask_model(
         model=model,
         prompt=prompt,
@@ -59,7 +66,7 @@ def process_prompt(prompt, image_path=None):
 
 if __name__ == "__main__":
 
-    while True:
+    while True: 
 
         prompt = input("\nYou: ")
 

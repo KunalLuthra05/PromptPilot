@@ -1,36 +1,76 @@
 @echo off
-title AI Launcher
+title PromptPilot Launcher
 color 0A
 
+REM ==========================================
+REM Move to PromptPilot project root
+REM ==========================================
+cd /d "%~dp0.."
+
 echo ==========================================
-echo        AI Launcher
+echo           PromptPilot Launcher
 echo ==========================================
 echo.
 
-:: Check Ollama
+REM ==========================================
+REM Start Ollama
+REM ==========================================
+
 tasklist | find /i "ollama.exe" >nul
 
 if %errorlevel%==0 (
     echo [✓] Ollama is already running.
 ) else (
     echo [*] Starting Ollama...
-    start "" ollama serve
-    timeout /t 3 /nobreak >nul
+    start "Ollama" cmd /k "ollama serve"
+    timeout /t 10 /nobreak >nul
 )
 
 echo.
 
-echo [*] Starting Open WebUI...
+REM ==========================================
+REM Start PromptPilot Backend
+REM ==========================================
 
-start "" "C:\Users\Kunal\AppData\Local\Python\pythoncore-3.12-64\Scripts\open-webui.exe" serve
+echo [*] Starting PromptPilot Backend...
+
+start "PromptPilot Backend" cmd /k "cd /d ""%CD%"" && py -3.12 -m uvicorn app.api:app --reload"
+
+timeout /t 20 /nobreak >nul
 
 echo.
-echo Waiting for Open WebUI...
+
+REM ==========================================
+REM Start Open WebUI
+REM ==========================================
+
+echo [*] Starting Open WebUI...
+
+start "Open WebUI" "C:\Users\Kunal\AppData\Local\Python\pythoncore-3.12-64\Scripts\open-webui.exe" serve
+
 timeout /t 40 /nobreak >nul
 
 echo.
-echo Opening browser...
 
-start "" http://localhost:8080
+REM ==========================================
+REM Open Browser
+REM ==========================================
+
+echo [*] Opening Open WebUI...
+start "" "http://localhost:8080"
+
+timeout /t 10 /nobreak >nul
+
+echo [*] Opening Swagger...
+start "" "http://127.0.0.1:8000/docs"
+
+echo.
+echo ==========================================
+echo     PromptPilot Started Successfully
+echo ==========================================
+echo.
+echo Open WebUI : http://localhost:8080
+echo Swagger UI : http://127.0.0.1:8000/docs
+echo.
 
 exit

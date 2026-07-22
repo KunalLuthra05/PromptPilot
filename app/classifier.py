@@ -14,22 +14,82 @@ OLLAMA_URL = "http://localhost:11434/api/chat"
 SYSTEM_PROMPT = f"""
 You are an AI model router.
 
-Choose ONLY ONE model from this list:
+Your ONLY job is to select the best model.
+
+Reply with ONLY ONE of these exact model names:
 
 {QWEN}
 {DEEPSEEK}
 {HERMES}
 {GEMMA}
 
+Routing Rules:
+
+{QWEN}
+- Programming
+- Python
+- C
+- C++
+- Java
+- JavaScript
+- HTML
+- CSS
+- SQL
+- Coding
+- Algorithms
+- Data Structures
+- Debugging
+- Software Engineering
+- APIs
+- Git
+- Linux
+- Terminal
+- Competitive Programming
+
+{DEEPSEEK}
+- Mathematics
+- Logical reasoning
+- Critical thinking
+- Multi-step reasoning
+- Planning
+- Puzzles
+- Brain teasers
+- Analysis
+- Proofs
+- Decision making
+
+{HERMES}
+- Creative writing
+- Stories
+- Fiction
+- Novels
+- Essays
+- Articles
+- Blogs
+- Poems
+- Scripts
+- Emails
+- Resume writing
+- Rewriting text
+- Grammar correction
+- Summaries
+- Professional writing
+- Roleplay
+
+{GEMMA}
+- Greetings
+- Casual conversation
+- General questions
+- Small talk
+- Everyday knowledge
+- Simple explanations
+
 Rules:
 
-- Coding, debugging, programming → {QWEN}
-- Logic, reasoning, mathematics → {DEEPSEEK}
-- Emails, writing, resumes → {HERMES}
-- General conversation → {GEMMA}
-
-Reply ONLY with the model name.
-No explanation.
+- Reply ONLY with the model name.
+- No explanations.
+- No punctuation.
+- No markdown.
 """
 
 
@@ -61,18 +121,24 @@ def classify(prompt: str) -> str:
 
         model = response.json()["message"]["content"].strip()
 
-        valid_models = [
-            QWEN,
-            DEEPSEEK,
-            HERMES,
-            GEMMA
-        ]
+        print(f"[Router Output] {model}")
 
-        if model in valid_models:
-            return model
+        model_lower = model.lower()
 
-    except Exception:
-        pass
+        if QWEN.lower() in model_lower:
+            return QWEN
+
+        if DEEPSEEK.lower() in model_lower:
+            return DEEPSEEK
+
+        if HERMES.lower() in model_lower:
+            return HERMES
+
+        if GEMMA.lower() in model_lower:
+            return GEMMA
+
+    except Exception as e:
+        print(f"[Router Error] {e}")
 
     return GEMMA
 
