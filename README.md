@@ -107,7 +107,7 @@ Images uploaded from Open WebUI are automatically converted to the format expect
 Clone the repository
 
 ```bash
-git clone https://github.com/KunalLuthra55/PromptPilot.git
+git clone https://github.com/KunalLuthra05/PromptPilot.git
 cd PromptPilot
 ```
 
