@@ -134,14 +134,8 @@ Connect Open WebUI to
 ```
 http://localhost:8000/v1
 ```
-
 ---
 
-# 📸 Screenshots
-
-> *(Add screenshots of PromptPilot + Open WebUI here)*
-
----
 
 # 🛣️ Roadmap
 
