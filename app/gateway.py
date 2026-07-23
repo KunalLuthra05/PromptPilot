@@ -5,6 +5,7 @@ def handle_chat_completion(request):
     """
     Converts an OpenAI-compatible chat request
     into PromptPilot's internal format.
+    Supports both text-only and vision requests.
     """
 
     if not request.messages:
@@ -14,11 +15,34 @@ def handle_chat_completion(request):
             }
         }
 
-    # Get the latest user message
-    prompt = request.messages[-1].content
+    latest_message = request.messages[-1].content
+
+    prompt = ""
+    image_path = None
+
+    # -------------------------
+    # Text-only request
+    # -------------------------
+    if isinstance(latest_message, str):
+        prompt = latest_message
+
+    # -------------------------
+    # Vision request
+    # -------------------------
+    else:
+        for part in latest_message:
+
+            if part.type == "text":
+                prompt = part.text
+
+            elif part.type == "image_url":
+                image_path = part.image_url.url
 
     # Route through PromptPilot
-    result = process_prompt(prompt)
+    result = process_prompt(
+        prompt=prompt,
+        image_path=image_path
+    )
 
     # Convert back to OpenAI format
     return {

@@ -13,7 +13,10 @@ OLLAMA_URL = "http://localhost:11434/api/chat"
 def ask_model(model, prompt, image_path=None):
     """
     Send a prompt to an Ollama model.
-    Supports both text and optional image input.
+    Supports:
+    - Text-only prompts
+    - Local image files
+    - Base64 images from Open WebUI
     """
 
     add_user_message(prompt)
@@ -22,10 +25,21 @@ def ask_model(model, prompt, image_path=None):
 
     if image_path:
 
-        with open(image_path, "rb") as image_file:
-            image_data = base64.b64encode(
-                image_file.read()
-            ).decode("utf-8")
+        # -------------------------
+        # Open WebUI sends:
+        # data:image/png;base64,...
+        # -------------------------
+        if image_path.startswith("data:image"):
+            image_data = image_path.split(",", 1)[1]
+
+        # -------------------------
+        # Local image path
+        # -------------------------
+        else:
+            with open(image_path, "rb") as image_file:
+                image_data = base64.b64encode(
+                    image_file.read()
+                ).decode("utf-8")
 
         messages[-1]["images"] = [image_data]
 
